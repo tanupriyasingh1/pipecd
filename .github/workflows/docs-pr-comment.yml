@@ -61,7 +61,7 @@ jobs:
               "### Need help?",
               "Feel free to ask in this PR or join us on the CNCF Slack in the **#pipecd** channel.",
               "You can get your Slack invite from: https://communityinviter.com/apps/cloud-native/cncf"
-            ].join("\\n");
+            ].join("\n");
 
             await github.rest.issues.createComment({
               owner,
