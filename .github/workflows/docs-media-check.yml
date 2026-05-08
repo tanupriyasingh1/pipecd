@@ -1,0 +1,55 @@
+name: Docs media check
+
+on:
+  pull_request_target:
+    types: [opened, edited, synchronize]
+
+permissions:
+  pull-requests: read
+
+jobs:
+  check-screenshot:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check for screenshot/video in PR body
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const prNumber = context.payload.pull_request.number;
+            const body = context.payload.pull_request.body || "";
+
+            // Get list of changed files in this PR
+            const { data: files } = await github.rest.pulls.listFiles({
+              owner,
+              repo,
+              pull_number: prNumber,
+            });
+
+            // Check if any doc-related files were changed
+            const docChanged = files.some(f =>
+              f.filename.startsWith("docs/") ||
+              f.filename.endsWith(".md") ||
+              f.filename.endsWith(".mdx")
+            );
+
+            // If no doc files changed, skip this check entirely
+            if (!docChanged) {
+              console.log("No doc files changed. Skipping check.");
+              return;
+            }
+
+            console.log("Doc files changed. Checking for media attachment...");
+
+            // Look for image or video URLs in the PR body
+            const hasMedia = /https:\/\/github\.com\/user-attachments\/|https:\/\/user-images\.githubusercontent\.com\/|!\[.*?\]\(.*?\)|\.png|\.jpg|\.jpeg|\.gif|\.mp4|\.webm/i.test(body);
+
+            if (!hasMedia) {
+              core.setFailed(
+                "This PR modifies documentation but no screenshot or video was found in the PR description.\n" +
+                "Please run the docs locally, take a screenshot or screen recording of the rendered output, and attach it to this PR."
+              );
+            } else {
+              console.log("Check passed. Media attachment found.");
+            }

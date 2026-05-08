@@ -1,0 +1,69 @@
+name: Docs PR bot comment
+
+on:
+  pull_request_target:
+    types: [opened]
+
+permissions:
+  pull-requests: write
+
+jobs:
+  comment:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Comment on doc PRs requesting screenshot/video
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const prAuthor = context.payload.pull_request.user.login;
+            const prNumber = context.payload.pull_request.number;
+
+            // Get list of changed files in this PR
+            const { data: files } = await github.rest.pulls.listFiles({
+              owner,
+              repo,
+              pull_number: prNumber,
+            });
+
+            // Check if any doc-related files were changed
+            const docChanged = files.some(f =>
+              f.filename.startsWith("docs/") ||
+              f.filename.endsWith(".md") ||
+              f.filename.endsWith(".mdx")
+            );
+
+            // If no doc files changed, skip commenting
+            if (!docChanged) {
+              console.log("No doc files changed. Skipping comment.");
+              return;
+            }
+
+            const body = `Hi @${prAuthor}, thanks for contributing to PipeCD docs!
+
+This PR modifies documentation, so we require a screenshot or short screen recording of the rendered output before it can be reviewed.
+
+Please make sure to:
+- Run the docs locally and verify your changes render correctly
+- Attach a **screenshot or screen recording** of the rendered output in this PR description
+
+> PRs that modify documentation without a screenshot or video will **fail the CI check** and cannot be merged.
+
+---
+
+### How to run docs locally
+Refer to our contributing guide: https://github.com/pipe-cd/pipecd/blob/master/CONTRIBUTING.md
+
+---
+
+### Need help?
+Feel free to ask in this PR or join us on the CNCF Slack in the **#pipecd** channel.
+You can get your Slack invite from: https://communityinviter.com/apps/cloud-native/cncf`;
+
+            await github.rest.issues.createComment({
+              owner,
+              repo,
+              issue_number: prNumber,
+              body,
+            });
