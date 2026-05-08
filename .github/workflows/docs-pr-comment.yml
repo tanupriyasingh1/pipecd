@@ -40,26 +40,28 @@ jobs:
               return;
             }
 
-            const body = `Hi @${prAuthor}, thanks for contributing to PipeCD docs!
-
-This PR modifies documentation, so we require a screenshot or short screen recording of the rendered output before it can be reviewed.
-
-Please make sure to:
-- Run the docs locally and verify your changes render correctly
-- Attach a **screenshot or screen recording** of the rendered output in this PR description
-
-> PRs that modify documentation without a screenshot or video will **fail the CI check** and cannot be merged.
-
----
-
-### How to run docs locally
-Refer to our contributing guide: https://github.com/pipe-cd/pipecd/blob/master/CONTRIBUTING.md
-
----
-
-### Need help?
-Feel free to ask in this PR or join us on the CNCF Slack in the **#pipecd** channel.
-You can get your Slack invite from: https://communityinviter.com/apps/cloud-native/cncf`;
+            const body = [
+              "Hi @" + prAuthor + ", thanks for contributing to PipeCD docs!",
+              "",
+              "This PR modifies documentation, so we require a screenshot or short screen recording of the rendered output before it can be reviewed.",
+              "",
+              "Please make sure to:",
+              "- Run the docs locally and verify your changes render correctly",
+              "- Attach a **screenshot or screen recording** of the rendered output in this PR description",
+              "",
+              "> PRs that modify documentation without a screenshot or video will **fail the CI check** and cannot be merged.",
+              "",
+              "---",
+              "",
+              "### How to run docs locally",
+              "Refer to our contributing guide: https://github.com/pipe-cd/pipecd/blob/master/CONTRIBUTING.md",
+              "",
+              "---",
+              "",
+              "### Need help?",
+              "Feel free to ask in this PR or join us on the CNCF Slack in the **#pipecd** channel.",
+              "You can get your Slack invite from: https://communityinviter.com/apps/cloud-native/cncf"
+            ].join("\\n");
 
             await github.rest.issues.createComment({
               owner,
