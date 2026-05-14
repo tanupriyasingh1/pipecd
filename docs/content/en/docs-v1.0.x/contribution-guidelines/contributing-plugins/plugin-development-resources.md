@@ -31,11 +31,11 @@ If you are new to PipeCD v1, read [Plugins](/docs-v1.0.x/concepts/#plugins) and 
 | **Pipeline** | Ordered **stages** (for example sync, canary, wait) from the application config. |
 | **Stage** | One step in the pipeline; your plugin implements the stages it supports. |
 
-For plugin interfaces (**Deployment**, **LiveState**, **Drift**), see [Plugin types](../#plugin-types). A first plugin usually implements **Deployment** only.
+For plugin interfaces (**Deployment**, **LiveState**, **Drift**), see [Plugin types](./#plugin-types). A first plugin usually implements **Deployment** only.
 
 ## Local development
 
-Use a `piped` v1 build that matches your work. From the repo you can run `make run/piped` as in the [contributing guide](../#build-and-test). To install a release binary, see [Installing on a single machine](/docs-v1.0.x/installation/install-piped/installing-on-single-machine/).
+Use a `piped` v1 build that matches your work. From the repo you can run `make run/piped` as in the [contributing guide](./#build-and-test). To install a release binary, see [Installing on a single machine](/docs-v1.0.x/installation/install-piped/installing-on-single-machine/).
 
 Example when running the v1 `piped` CLI:
 
